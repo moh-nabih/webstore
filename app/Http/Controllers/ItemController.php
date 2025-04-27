@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Item;
 
 class ItemController extends Controller
 {
@@ -11,7 +12,8 @@ class ItemController extends Controller
      */
     public function index()
     {
-        //
+        $items = Item::all();
+        return view('items.index', compact('items'));
     }
 
     /**
@@ -19,7 +21,7 @@ class ItemController extends Controller
      */
     public function create()
     {
-        //
+        return view('items.partials.form');
     }
 
     /**
@@ -27,15 +29,31 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric',
+            'stock' => 'required|numeric',
+            'image_url' => 'nullable|string'
+        ]);
+
+        Item::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'image_url' => $request->image_url,
+        ]);
+        return redirect()->route('items.index')->with('success', 'Item created successfully!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $item = Item::findOrFail($id);
+        return view('items.item', compact('item'));
     }
 
     /**
