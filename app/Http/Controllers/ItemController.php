@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ItemCreatedEvent;
 use Illuminate\Http\Request;
 use App\Models\Item;
 
@@ -37,13 +38,16 @@ class ItemController extends Controller
             'image_url' => 'nullable|string'
         ]);
 
-        Item::create([
+        $item = Item::create([
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
             'stock' => $request->stock,
             'image_url' => $request->image_url,
         ]);
+
+        ItemCreatedEvent::dispatch($item);
+
         return redirect()->route('items.index')->with('success', 'Item created successfully!');
     }
 
