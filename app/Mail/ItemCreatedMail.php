@@ -9,16 +9,20 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ItemCreatedMail extends Mailable
+use App\Models\Item;
+
+class ItemCreatedMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
+
+    public $item;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(Item $item)
     {
-        //
+        $this->item = $item;
     }
 
     /**
@@ -49,5 +53,14 @@ class ItemCreatedMail extends Mailable
     public function attachments(): array
     {
         return [];
+    }
+
+    public function build()
+    {
+        return $this->subject('Item Created')
+                    ->view('emails.itemCreated')
+                    ->with([
+                        'item' => $this->item
+                    ]);
     }
 }

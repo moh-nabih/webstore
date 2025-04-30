@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ItemCreatedMail;
 use App\Models\Item;
 
-class ItemCreatedNotification
+class ItemCreatedNotification implements ShouldQueue
 {
 
     public Item $item;
